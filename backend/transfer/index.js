@@ -2,7 +2,7 @@ const TonWeb = require("tonweb");
 const tonMnemonic = require("tonweb-mnemonic");
 
 const tonweb = new TonWeb(new TonWeb.HttpProvider("https://testnet.toncenter.com/api/v2/jsonRPC", {
-    apiKey: "9affe93bf0ef943fea4d7f2c241eb1590ab8dc130f304157efa629aed1366e7a",
+    apiKey: "f43f084474b7da0ad33da8ccca44077c788b87fd6fb670e4970e4e2f0645e65b",
 }))
 
 const createWallet = async (publicKey) => {
@@ -37,8 +37,13 @@ const transfer = async (src, secretKey, dst, amount, payload) => {
         payload: payload,
         sendMode: 3, // sender pay fees, ignore errors
 
-    })
-    return await transfer.send();
+    });
+    const msg = await transfer.getQuery();
+    const msgHash = await msg.hash();
+    return {
+        msgHash: TonWeb.utils.bytesToHex(msgHash),
+        res: await transfer.send(),
+    }
 }
 
 (async () => {
